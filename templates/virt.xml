@@ -1,0 +1,32 @@
+<domain type="kvm">
+    <name>{{name}}</name>
+    <memory unit='b'>{{memory}}</memory>
+    <vcpu>1</vcpu>
+    <os>
+        <type>hvm</type>
+        <kernel>{{kernel}}</kernel>
+        <initrd>{{initrd}}</initrd>
+        <cmdline>root=/dev/vda console=ttyS0</cmdline>
+    </os>
+    <features>
+        <acpi/>
+    </features>
+    <devices>
+        <interface type="network">
+            <source network="default"/>
+        </interface>
+        <disk type="file" device="disk">
+            <driver type="qcow2" cache="none"/>
+            <source file="{{root}}"/>
+            <target dev="vda" bus="virtio"/>
+        </disk>
+        <serial type="pty">
+            <target port="0"/>
+        </serial>
+        <console type="pty">
+            <target type="serial" port="0"/>
+        </console>
+        <input type="tablet" bus="usb"/>
+        <graphics type="vnc" autoport="yes" keymap="en-us" listen="0.0.0.0"/>
+    </devices>
+</domain>

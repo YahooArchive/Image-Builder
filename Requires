@@ -1,0 +1,11 @@
+# Used for yaml reading
+pyyaml
+
+# Used for nice pretty coloring
+termcolor
+
+# Used for progress bar prettyness
+progressbar
+
+# Used for filling in a libvirt xml sample file
+tempita

@@ -1,0 +1,69 @@
+*OpenStack Imaging Hot Sauce*
+
+---- Description
+
+Modular image builder from imaging awesomness.
+
+---- Default modules
+
+1. add_user (adds a given set of sudo users)
+2. install_rpms (installs a list of rpm packages)
+3. Your imagination...
+
+---- Examples
+
+$ sudo python ./build.py -s 4G
+
+To add users make a yaml like the following:
+
+$ cat build.yaml 
+
+---
+# Which modules should be ran (in order)
+modules:
+  - install-rpms
+  - add_user
+
+# Enable this if you wish to install
+# any users info into the image (ie for testing).
+add_users: 
+   - harlowja
+
+...
+
+Then run:
+
+$ sudo python ./build.py  -s 4G -o blah.tar.gz -x
+
+---- Adding your own module
+
+To add your own module create a file in the `modules` folder with a function
+of the following format:
+
+def modify(name, root, cfg):
+   # DO SOMETHING HERE
+   
+The name that is passed in will be the module name (from configuration) with
+the root variable being the root directory of the mounted image (useful for chroot) 
+or other file alterations and the cfg variable will be the build configuration 
+dictionary (useful for extracting any module configuration specifics)
+
+Then save this file with a given name, ie xyz.py, and then to get this module
+to be activated add it to the modules list in the build.yaml with the name
+xyz and then go ahead and build your image. If this module errors out the image
+will not be successfully built so use this method to stop image building (ie
+by throwing exceptions)
+
+---- Using your image
+
+To upload this image, take the upload-img tool in anvil and provide it the url
+of your file, for example given a archive at /homes/harlowja/blah.tar.gz
+you would upload this via the following command.
+
+$ python tools/upload-img.py  -u file://///homes/harlowja/blah.tar.gz
+
+Then the upload-img tool will go through the nitty gritty of extracting that
+image and connecting the pieces together to form a useable image in openstack. 
+The image produced should also be easily useable in amazon (if someone ever
+gets around to trying that).
+

@@ -1,0 +1,29 @@
+---
+
+# Download configuration...
+download: 
+  # Any url u want to download from (right now must be a tarball)
+  from: ""
+  root_file: 'root.tar.gz' # A possible file inside the tarball that is the real root filesystem archive...
+  cache_dir: 'cache/'
+
+# Which modules should be ran (in order)
+modules:
+  - install-rpms
+  - add_user
+
+# Any configs for your modules go here
+# ....
+
+
+# Enable this if you wish to install
+# any users info into the image (ie for testing).
+# add_users: 
+#   - harlowja
+
+# Enable this if u want custom rpms installed
+# rpms:
+#  - /your/rpm/blah.rpm
+
+...
+
