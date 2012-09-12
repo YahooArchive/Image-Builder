@@ -153,15 +153,6 @@ def rand_str(strlen=32, select_from=None):
     return "".join([random.choice(select_from) for _x in range(0, strlen)])
 
 
-def decomp_str(data):
-    try:
-        buf = StringIO(str(data))
-        with contextlib.closing(gzip.GzipFile(None, "rb", 1, buf)) as gh:
-            return gh.read()
-    except:
-        return data
-
-
 def download_url(url, where_to, timeout=5):
     with contextlib.closing(urllib2.urlopen(url, timeout=timeout)) as rh:
         status = rh.getcode()
