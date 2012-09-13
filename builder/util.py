@@ -18,24 +18,16 @@ from StringIO import StringIO
 
 import contextlib
 import errno
-import grp
-import gzip
 import hashlib
 import os
-import platform
-import pwd
 import random
 import shutil
-import stat
-import string  # pylint: disable=W0402
 import subprocess
 import sys
 import tempfile
 import time
 import types
 import urllib2
-import urllib
-import urlparse
 
 import progressbar
 import termcolor
@@ -113,16 +105,6 @@ def quote(data, quote_color='green'):
         return color(text, quote_color)
 
 
-def format(data, params):
-    text = str(data)
-
-    def replacer(match):
-        param_name = match.group(1)
-        return color(params[param_name], color=match.group(2).strip())
-
-    return re.sub(r"\{([\w\d]+):(.*)\}", replacer, text)
-
-
 def color(data, color, bold=False, underline=False, blink=False):
     text = str(data)
     text_attrs = list()
@@ -139,16 +121,10 @@ def color(data, color, bold=False, underline=False, blink=False):
 
 
 def find_file(name, path):
-    for (root, dirs, files) in os.walk(path):
+    for (root, _dirs, files) in os.walk(path):
         if name in files:
             return os.path.join(root, name)
     return None
-
-
-def rand_str(strlen=32, select_from=None):
-    if not select_from:
-        select_from = string.letters + string.digits
-    return "".join([random.choice(select_from) for _x in range(0, strlen)])
 
 
 def download_url(url, where_to, timeout=5):
@@ -216,28 +192,6 @@ def pretty_transfer(in_fh, out_fh, quiet=False,
             pbar.finish()
 
 
-def make_url(scheme, host, port=None,
-                path='', params='', query='', fragment=''):
-
-    pieces = []
-    pieces.append(scheme or '')
-
-    netloc = ''
-    if host:
-        netloc = str(host)
-
-    if port is not None:
-        netloc += ":" + "%s" % (port)
-
-    pieces.append(netloc or '')
-    pieces.append(path or '')
-    pieces.append(params or '')
-    pieces.append(query or '')
-    pieces.append(fragment or '')
-
-    return urlparse.urlunparse(pieces)
-
-
 def obj_name(obj):
     if isinstance(obj, (types.TypeType,
                         types.ModuleType,
@@ -245,17 +199,6 @@ def obj_name(obj):
                         types.LambdaType)):
         return str(obj.__name__)
     return obj_name(obj.__class__)
-
-
-@contextlib.contextmanager
-def chdir(ndir):
-    curr = os.getcwd()
-    try:
-        os.chdir(ndir)
-        yield ndir
-    finally:
-        os.chdir(curr)
-
 
 
 @contextlib.contextmanager
@@ -270,26 +213,21 @@ def tempdir(**kwargs):
         del_dir(tdir)
 
 
-def center(text, fill, max_len):
-    return '{0:{fill}{align}{size}}'.format(text, fill=fill,
-                                            align="^", size=max_len)
-
-
 def del_dir(path):
     shutil.rmtree(path)
 
 
 def load_file(fname, read_cb=None, quiet=False):
-    ofh = StringIO()
+    contents = None
     try:
         with open(fname, 'rb') as ifh:
+            ofh = StringIO()
             pipe_in_out(ifh, ofh, chunk_cb=read_cb)
+            contents = ofh.getvalue()
     except IOError as e:
         if not quiet:
-            raise
-        if e.errno != errno.ENOENT:
-            raise
-    contents = ofh.getvalue()
+            if e.errno != errno.ENOENT:
+                raise
     return contents
 
 
@@ -321,18 +259,10 @@ def print_iterable(to_log, header=None, do_color=True):
         print("|-- %s" % (c))
 
 
-def hash_blob(blob, routine, mlen=None):
+def hash_blob(blob, routine):
     hasher = hashlib.new(routine)
     hasher.update(blob)
-    digest = hasher.hexdigest()
-    if mlen is not None:
-        return digest[0:mlen]
-    else:
-        return digest
-
-
-def rename(src, dest):
-    os.rename(src, dest)
+    return hasher.hexdigest()
 
 
 def ensure_dirs(dirlist, mode=0755):
@@ -340,15 +270,8 @@ def ensure_dirs(dirlist, mode=0755):
         ensure_dir(d, mode)
 
 
-def load_yaml(blob, allowed=(dict,)):
-    blob = str(blob)
-    converted = yaml.safe_load(blob)
-    if not isinstance(converted, allowed):
-        raise TypeError(("Yaml load allows %s root types,"
-                         " but got %s instead") %
-                        (allowed, obj_name(converted)))
-    loaded = converted
-    return loaded
+def load_yaml(blob):
+    return yaml.safe_load(str(blob))
 
 
 def ensure_dir(path, mode=None):
@@ -356,12 +279,7 @@ def ensure_dir(path, mode=None):
         os.makedirs(path)
         chmod(path, mode)
     else:
-        # Just adjust the mode
         chmod(path, mode)
-
-
-def sym_link(source, link):
-    os.symlink(source, link)
 
 
 def del_file(path):

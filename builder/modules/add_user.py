@@ -15,9 +15,6 @@
 #    under the License.
 
 
-
-import os
-
 from builder import util
 
 
@@ -30,6 +27,5 @@ def modify(name, root, cfg):
                         (util.quote(name)))
     for uname in user_names:
         cmd = ['chroot', root,
-               'yinst', 'i', '-yes',
-               'admin/sudo-%s' % (uname)]
+               'useradd', '-m', str(uname)]
         util.subp(cmd, capture=False)

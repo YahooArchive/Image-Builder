@@ -27,7 +27,6 @@ import tarfile
 import tempfile
 import traceback
 import urllib
-import urllib2
 import uuid
 
 from contextlib import (closing, contextmanager)

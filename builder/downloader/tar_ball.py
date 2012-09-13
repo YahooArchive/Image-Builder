@@ -28,7 +28,8 @@ class TarBallDownloader(object):
         self.root_file = config.get('root_file')
 
     def _check_cache(self):
-        cache_name = util.hash_blob(self.where_from, 'md5', mlen=8)
+        cache_name = util.hash_blob(self.where_from, 'md5')
+        cache_name = cache_name[0:8]
         full_pth = os.path.join(self.cache_dir, "%s.tar.gz" % (cache_name))
         if os.path.isfile(full_pth):
             return (full_pth, True)
@@ -46,7 +47,7 @@ class TarBallDownloader(object):
                 if not root_gz:
                     raise RuntimeError(("Needed file %r not found in"
                                         " extracted contents of %s") 
-                                        % (self.root_file, cache_pth))
+                                        % (self.root_file, arch_path))
                 else:
                     util.copy(root_gz, arch_path)
         return arch_path
