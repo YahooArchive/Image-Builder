@@ -1,6 +1,9 @@
-# vi: ts=4 expandtab
-#
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
+
 #    Copyright (C) 2012 Yahoo! Inc. All Rights Reserved.
+#
+#    Copyright 2011 OpenStack LLC.
+#    All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -18,7 +21,6 @@ from StringIO import StringIO
 
 import contextlib
 import errno
-import glob
 import grp
 import gzip
 import hashlib
@@ -27,7 +29,6 @@ import platform
 import pwd
 import random
 import shutil
-import socket
 import stat
 import string  # pylint: disable=W0402
 import subprocess
