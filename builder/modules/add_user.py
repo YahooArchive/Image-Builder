@@ -15,6 +15,8 @@
 #    under the License.
 
 
+import os
+
 from builder import util
 
 
@@ -23,9 +25,12 @@ def modify(name, root, cfg):
     if not user_names:
         return
     util.print_iterable(user_names,
-                        header="Adding the following users in module %s" %
+                        header="Adding the following sudo users in module %s" %
                         (util.quote(name)))
     for uname in user_names:
-        cmd = ['chroot', root,
-               'useradd', '-m', str(uname)]
+        cmd = ['chroot', root, 'useradd', '-m', str(uname)]
         util.subp(cmd, capture=False)
+        if os.path.isfile(os.path.join(root, 'etc', 'sudoers')):
+            with open(os.path.join(root, 'etc', 'sudoers'), 'a') as fh:
+                new_entry = "%s ALL=(ALL) ALL" % (uname)
+                fh.write("%s\n" % (new_entry))
