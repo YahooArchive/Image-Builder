@@ -216,15 +216,6 @@ def pretty_transfer(in_fh, out_fh, quiet=False,
             pbar.finish()
 
 
-def system_info():
-    return {
-        'platform': platform.platform(),
-        'release': platform.release(),
-        'python': platform.python_version(),
-        'uname': platform.uname(),
-    }
-
-
 def make_url(scheme, host, port=None,
                 path='', params='', query='', fragment=''):
 
@@ -265,14 +256,6 @@ def chdir(ndir):
     finally:
         os.chdir(curr)
 
-
-@contextlib.contextmanager
-def umask(n_msk):
-    old = os.umask(n_msk)
-    try:
-        yield old
-    finally:
-        os.umask(old)
 
 
 @contextlib.contextmanager
@@ -325,22 +308,6 @@ def pipe_in_out(in_fh, out_fh, chunk_size=1024, chunk_cb=None):
     return bytes_piped
 
 
-def chownbyid(fname, uid=None, gid=None):
-    if uid is None and gid is None:
-        return
-    os.chown(fname, uid, gid)
-
-
-def chownbyname(fname, user=None, group=None):
-    uid = -1
-    gid = -1
-    if user:
-        uid = pwd.getpwnam(user).pw_uid
-    if group:
-        gid = grp.getgrnam(group).gr_gid
-    chownbyid(fname, uid, gid)
-
-
 def print_iterable(to_log, header=None, do_color=True):
     if not to_log:
         return
@@ -358,7 +325,6 @@ def hash_blob(blob, routine, mlen=None):
     hasher = hashlib.new(routine)
     hasher.update(blob)
     digest = hasher.hexdigest()
-    # Don't get to long now
     if mlen is not None:
         return digest[0:mlen]
     else:
@@ -378,7 +344,6 @@ def load_yaml(blob, allowed=(dict,)):
     blob = str(blob)
     converted = yaml.safe_load(blob)
     if not isinstance(converted, allowed):
-        # Yes this will just be caught, but thats ok for now...
         raise TypeError(("Yaml load allows %s root types,"
                          " but got %s instead") %
                         (allowed, obj_name(converted)))
