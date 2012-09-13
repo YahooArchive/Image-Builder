@@ -285,7 +285,6 @@ def format_blank(tmp_file_name, size, fs_type):
 
     devname = create_loopback(tmp_file_name)
     with cmd_undo(['losetup', '-d', devname]):
-        # See: http://tiny.corp.yahoo.com/4H0lda
         # These are commands to fdisk that will get activated (in order)
         fdisk_in = [
             'n',
