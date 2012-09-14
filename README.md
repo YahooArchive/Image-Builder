@@ -64,28 +64,35 @@ of the following format:
     def modify(name, root, cfg):
        # DO SOMETHING HERE
     
-The name that is passed in will be the module name (from configuration) with
-the root variable being the root directory of the mounted image (useful for chroot) 
-or other file alterations and the cfg variable will be the build configuration 
+The `name` that is passed in will be the module name (from configuration) with
+the `root` variable being the root directory of the mounted image (useful for `chroot`) 
+or other file alterations and the `cfg` variable will be the build configuration 
 dictionary (useful for extracting any module configuration specifics)
 
-Then save this file with a given name, ie xyz.py, and then to get this module
-to be activated add it to the modules list in the build.yaml with the name
-xyz and then go ahead and build your image. If this module errors out the image
+Then save this file with a given name, ie ``xyz.py``, and then to get this module
+to be activated add it to the modules list in the ``build.yaml`` file with the name
+``xyz`` and then go ahead and build your image. 
+
+**Note:** If this module errors out (or other modules do the same) the image
 will not be successfully built so use this method to stop image building (ie
-by throwing exceptions)
+by throwing exceptions).
 
 Using your image
 ----
 
-To upload this image, take the upload-img tool in anvil and provide it the url
-of your file, for example given a archive at /homes/harlowja/blah.tar.gz
-you would upload this via the following command.
+To upload this image, take the `image-upload` tool in [anvil](http://anvil.readthedocs.org/) (or use the glance-client
+itself, either or) and provide it the url of your file, for example given a 
+archive at `/homes/harlowja/blah.tar.gz` you would upload this via the following command.
 
-    $ python tools/upload-img.py  -u file://///homes/harlowja/blah.tar.gz
+    $ python tools/img-uploader.py  -i file://///homes/harlowja/blah.tar.gz 
+                                    -g $GLANCE_URI -k $KEYSTONE_URI 
+                                    -u $YOUR_USER -t $YOUR_TENANT
 
-Then the upload-img tool will go through the nitty gritty of extracting that
-image and connecting the pieces together to form a useable image in openstack. 
-The image produced should also be easily useable in amazon (if someone ever
-gets around to trying that).
+Using the  `image-upload` tool will go through the *nitty gritty* of extracting that
+image and connecting the pieces together to form a useable image in openstack. You
+can of course do the same with the [glance-client](https://github.com/openstack/python-glanceclient)
+(although you will have to know the special invocations to achieve the same effect as the `image-upload` tool performs).
+
+**Note:** The image produced should also be easily useable in amazon (if someone ever
+gets around to trying that...).
 
