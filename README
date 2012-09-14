@@ -2,13 +2,18 @@
 
 ---- Description
 
-Modular image builder from imaging awesomness.
+Modular image builder for imaging awesomeness!
+
+---- Status
+
+1. Needs love and tender care (it is mostly a prototype)
 
 ---- Default modules
 
 1. add_user (adds a given set of sudo users)
 2. install_rpms (installs a list of rpm packages)
-3. Your imagination...
+...
+1000. Your imagination...
 
 ---- Examples
 
