@@ -11,6 +11,8 @@ Goals
 ----
 
 1. Make it easy to create EC2 style images (root, kernel, ramdisk *like*)
+  1. Using varying sources for those images (right now just a *tarball* of a installed `/` partition)
+  1. More to come?
 1. Make it easy to add in custom logic on-top of those images via a modular set of python code that you can easily extend
 1. Improve on *#1* and *#2*
 
