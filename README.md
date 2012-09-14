@@ -1,53 +1,69 @@
 *Imaging Hot Sauce*
+========
 
----- Description
+
+Description
+--------
 
 Modular image builder for imaging awesomeness!
 
----- Status
+Goals
+----
+
+1. Make it easy to create EC2 style images (root, kernel, ramdisk *like*)
+1. Make it easy to add in custom logic on-top of those images via a modular set of python code that you can easily extend
+1. Improve on *#1* and *#2*
+
+
+Status
+--------
 
 1. Needs love and tender care (it is mostly a prototype)
 
----- Default modules
+
+Default modules
+--------
 
 1. add_user (adds a given set of sudo users)
-2. install_rpms (installs a list of rpm packages)
+1. install_rpms (installs a list of rpm packages)
 ...
 1000. Your imagination...
 
----- Examples
+Examples
+---- 
 
-$ sudo python ./build.py -s 4G
+    $ sudo python ./build.py -s 4G
 
 To add users make a yaml like the following:
 
-$ cat build.yaml 
-
----
-# Which modules should be ran (in order)
-modules:
-  - install-rpms
-  - add_user
-
-# Enable this if you wish to install
-# any users info into the image (ie for testing).
-add_users: 
-   - harlowja
-
-...
+    $ cat build.yaml 
+    
+    ---
+    # Which modules should be ran (in order)
+    modules:
+      - install-rpms
+      - add_user
+    
+    # Enable this if you wish to install
+    # any users info into the image (ie for testing).
+    add_users: 
+       - harlowja
+    
+    ...
 
 Then run:
 
-$ sudo python ./build.py  -s 4G -o blah.tar.gz -x
+    $ sudo python ./build.py  -s 4G -o blah.tar.gz -x
 
----- Adding your own module
+Adding your own module
+---- 
 
 To add your own module create a file in the `modules` folder with a function
 of the following format:
 
-def modify(name, root, cfg):
-   # DO SOMETHING HERE
-   
+    def modify(name, root, cfg):
+       # DO SOMETHING HERE
+    
 The name that is passed in will be the module name (from configuration) with
 the root variable being the root directory of the mounted image (useful for chroot) 
 or other file alterations and the cfg variable will be the build configuration 
@@ -59,13 +75,14 @@ xyz and then go ahead and build your image. If this module errors out the image
 will not be successfully built so use this method to stop image building (ie
 by throwing exceptions)
 
----- Using your image
+Using your image
+----
 
 To upload this image, take the upload-img tool in anvil and provide it the url
 of your file, for example given a archive at /homes/harlowja/blah.tar.gz
 you would upload this via the following command.
 
-$ python tools/upload-img.py  -u file://///homes/harlowja/blah.tar.gz
+    $ python tools/upload-img.py  -u file://///homes/harlowja/blah.tar.gz
 
 Then the upload-img tool will go through the nitty gritty of extracting that
 image and connecting the pieces together to form a useable image in openstack. 
