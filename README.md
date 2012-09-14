@@ -24,8 +24,8 @@ Status
 Default modules
 --------
 
-1. add_user (adds a given set of sudo users)
-1. install_rpms (installs a list of rpm packages)
+1. `add_user` (adds a given set of sudo users)
+1. `install_rpms` (installs a list of rpm packages)
 ...
 1000. Your imagination...
 
